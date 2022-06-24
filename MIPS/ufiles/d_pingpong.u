@@ -1,7 +1,0 @@
-		.org	0x00400000
-
-initfp:		lw	r1,0(r0)
-		lw	r2,16(r0)
-	        j	initfp
-		nop
-		.end

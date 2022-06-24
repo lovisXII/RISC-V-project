@@ -1,2 +1,0 @@
-g++ -g -Wall -Wno-deprecated -I. -I.. -I../../../include -c pi_cpu.cpp
-g++ -g -Wall -Wno-deprecated -I. -I.. -I../../../include -L. -L.. -L../../../lib-linux -o run.x pi_cpu.o  -lsystemc -lm  2>&1 | c++filt

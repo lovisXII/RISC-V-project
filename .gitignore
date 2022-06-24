@@ -14,7 +14,6 @@ bin
 *.tar.gz
 *.tar.gz.*
 Shell_script/bcm2835-1.70/
-*.ini
 *.out
 *.out.txt
 riscof/__pycache__
@@ -22,3 +21,5 @@ riscof/__pycache__
 *.lst
 riverOS/target
 riverOS/Cargo.lock
+build
+install

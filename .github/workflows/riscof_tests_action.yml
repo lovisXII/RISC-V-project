@@ -41,7 +41,7 @@ jobs:
       - if: ${{ steps.cache-riscv.outputs.cache-hit != 'true' }}
         name: Get riscv
         run: 
-          ./scripts/install_cross_compile.sh
+          ./.github/scripts/install_cross_compile.sh
       - name: Cache systemC
         id: cache-systemc
         uses: actions/cache@v3
@@ -58,10 +58,10 @@ jobs:
 
       - if: ${{ steps.cache-systemc.outputs.cache-hit != 'true' }}
         name: Build systemC
-        run: ./scripts/install_systemc.sh
+        run: ./.github/scripts/install_systemc.sh
 
       - name: Build
-        run: ./scripts/build_systemc_core.sh
+        run: ./.github/scripts/build_systemc_core.sh
 
       - name: Cache riscof
         id: cache-riscof
@@ -79,7 +79,7 @@ jobs:
       - if: ${{ steps.cache-riscof.outputs.cache-hit != 'true' }}
         name: Install riscof
         run: 
-          ./scripts/install_riscof.sh
+          ./.github/scripts/install_riscof.sh
       
       - name: Source env
         run: source ~/venv/bin/activate
@@ -100,14 +100,14 @@ jobs:
       - if: ${{ steps.cache-spike.outputs.cache-hit != 'true' }}
         name: Install spike
         run: 
-          ./scripts/install_spike.sh
+          ./.github/scripts/install_spike.sh
       
       - name: Copy riscof config
         run: 
-          cp scripts/github_config_file riscof/config.ini
+          cp .github/scripts/github_config_file riscof/config.ini
       - name: Run riscof
         run: 
           sudo apt-get install device-tree-compiler &&
-          ./scripts/test_systemc_core_riscof.sh
+          ./.github/scripts/test_systemc_core_riscof.sh
 
       
