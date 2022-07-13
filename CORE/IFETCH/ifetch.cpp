@@ -101,7 +101,6 @@ void ifetch::write_pred_reg()
             BRANCH_ADR_RI[pred_write_pointer_si.read()] = BRANCH_INST_ADR_RD.read();
             PREDICTED_ADR_RI[pred_write_pointer_si.read()] = ADR_TO_BRANCH_RD.read();
             PRED_STATE_RI[pred_write_pointer_si.read()] = weakly_taken;
-            sc_uint<size_of_pred_pointer> pointer = pred_write_pointer_si.read();
             pred_write_pointer_si = pred_write_pointer_si.read() + 1;
         }
         else
@@ -120,14 +119,14 @@ void ifetch::read_pred_reg()
             #ifdef BRANCH_PREDICTION
             found = true;
             #endif
-            PRED_NEXT_ADR_SI = PREDICTED_ADR_RI[i];
-            PRED_ADR_TAKEN_SI = (bool)(PRED_STATE_RI[i].read() == strongly_taken) || (PRED_STATE_RI[i].read() == weakly_taken);
+            pred_branch_next_adr_si = PREDICTED_ADR_RI[i];
+            pred_branch_taken_si = (bool)(PRED_STATE_RI[i].read() == strongly_taken) || (PRED_STATE_RI[i].read() == weakly_taken);
             break;
         }
     }
     if(!found)
     {
-        PRED_ADR_TAKEN_SI = false;
+        pred_branch_taken_si = false;
     }
 }
 void ifetch::calc_prob_pred()
@@ -154,7 +153,64 @@ void ifetch::calc_prob_pred()
             break;
         }
     }
-    
+}
+void ifetch::write_pred_ret_reg()
+{
+    int index = 0;
+    if(RET_INST_RD.read() && !IF2DEC_EMPTY_SI.read())
+    {
+        bool found = false;
+        for(int i = 0; i < ret_predictor_register_size; ++i)
+        {
+            if(RET_ADR_RI[i] == RET_INST_ADR_RD.read())
+            {
+                found = true;
+                index = i;
+                break;
+            }
+        }
+        if(!found)
+        {
+            RET_ADR_RI[ret_write_pointer_si.read()] = RET_INST_ADR_RD.read();
+
+            ret_write_pointer_si = ret_write_pointer_si.read() + 1;
+        }
+    }
+}
+void ifetch::write_ret_stack()
+{
+    int index = 0;
+    if(VALID_ADR_TO_RET_RD.read() && !IF2DEC_EMPTY_SI.read())
+    {
+        RET_STACK_RI[ret_stack_pointer_si.read()] = ADR_TO_RET_RD.read();
+
+        ret_stack_pointer_si = ret_stack_pointer_si.read() + 1;
+    }
+}
+void ifetch::read_pred_ret_reg()
+{
+    bool found = false;
+    for(int i = 0; i < predictor_register_size; ++i)
+    {
+        if(RET_ADR_RI[i].read() == PC_RD.read())
+        {
+            #ifdef BRANCH_PREDICTION
+            found = true;
+            #endif
+            pred_ret_next_adr_si = PREDICTED_ADR_RI[i];
+            break;
+        }
+    }
+    pred_ret_taken_si = found;
+}
+void ifetch::next_pred_adr()
+{
+    if(pred_branch_taken_si)
+        PRED_NEXT_ADR_SI.write(pred_branch_next_adr_si);
+    else if(pred_ret_taken_si)
+        PRED_NEXT_ADR_SI.write(pred_ret_next_adr_si);
+
+    PRED_ADR_TAKEN_SI = pred_branch_taken_si | pred_ret_taken_si;
 }
 void ifetch::trace(sc_trace_file* tf) {
     sc_trace(tf, ADR_SI, GET_NAME(ADR_SI));
