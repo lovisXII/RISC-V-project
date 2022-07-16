@@ -137,7 +137,7 @@ void decod::concat_dec2if()
     sc_bv<dec2if_size> dec2if_in_var;
     dec2if_in_var[98] = pred_failed_sd;
     dec2if_in_var[97] = pred_success_sd;
-    dec2if_in_var[96] = b_type_inst_sd | j_type_inst_sd;
+    dec2if_in_var[96] = b_type_inst_sd;// | j_type_inst_sd;
     dec2if_in_var.range(95, 64) = PC_IF2DEC_RI.read();
     dec2if_in_var.range(63, 32) = branch_adr_sd;
     dec2if_in_var.range(31, 0) = res_pc_sd;

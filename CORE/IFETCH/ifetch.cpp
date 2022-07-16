@@ -190,7 +190,7 @@ void ifetch::write_ret_stack()
 void ifetch::read_pred_ret_reg()
 {
     bool found = false;
-    for(int i = 0; i < predictor_register_size; ++i)
+    for(int i = 0; i < ret_predictor_register_size; ++i)
     {
         if(RET_ADR_RI[i].read() == PC_RD.read())
         {

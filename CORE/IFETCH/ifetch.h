@@ -49,11 +49,11 @@ SC_MODULE(ifetch) {
     sc_in<sc_uint<32>>   BRANCH_INST_ADR_RD;
     sc_in<sc_uint<32>>   ADR_TO_BRANCH_RD;
 
-    //sc_in<bool>        RET_INST_RD;
-    //sc_in<sc_uint<32>> RET_INST_ADR_RD
+    sc_in<bool>        RET_INST_RD;
+    sc_in<sc_uint<32>> RET_INST_ADR_RD;
 
-    //sc_in<bool>        VALID_ADR_TO_RET_RD;
-    //sc_in<sc_uint<32>> ADR_TO_RET_RD;
+    sc_in<bool>        VALID_ADR_TO_RET_RD;
+    sc_in<sc_uint<32>> ADR_TO_RET_RD;
 
 
     // if2dec interface
@@ -182,7 +182,7 @@ SC_MODULE(ifetch) {
         sensitive << CLK.neg();
 
         SC_METHOD(read_pred_ret_reg);
-        sensitive << ;
+        sensitive << PC_RD;
         
         SC_METHOD(next_pred_adr);
         sensitive << pred_branch_taken_si << pred_ret_taken_si;
